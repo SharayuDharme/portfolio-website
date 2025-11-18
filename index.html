@@ -23,3 +23,167 @@
     </footer>
 </body>
 </html>
+
+<--!
+git init
+git add .
+git commit -m "Initial portfolio website"
+git branch -M main
+git remote add origin https://github.com/yourusername/portfolio-website.git
+git push -u origin main
+
+⿡ Open Jenkins → Create a Pipeline Job
+
+Open browser
+
+http://localhost:8080
+
+
+Login to Jenkins
+
+Click New Item
+
+Choose Pipeline
+
+Name: PortfolioDeployment
+
+Click OK
+2️⃣ Add This Pipeline Script (Jenkinsfile)
+
+Paste this in the Pipeline section:
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/SharayuDharme/portfolio-website.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Static website - No build required"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    sudo rm -rf /var/www/html/*
+                    sudo cp -r * /var/www/html/
+                '''
+            }
+        }
+    }
+}
+
+✅ Step-1: Open your portfolio project folder on your computer
+
+Example:
+
+C:\Users\shara\OneDrive\Desktop\portfolio\
+
+✅ Step-2: Create a new file named Jenkinsfile
+
+It must have no extension.
+Not .txt, not .groovy.
+
+How:
+
+Right click → New → Text Document
+
+Name it exactly:
+
+Jenkinsfile
+
+
+(Remove .txt)
+
+If Windows adds .txt, rename and remove it.
+
+✅ Step-3: Open Jenkinsfile → paste the pipeline code
+
+Paste this inside the Jenkinsfile:
+
+pipeline {
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/SharayuDharme/portfolio-website.git'
+      }
+    }
+
+    stage('Build') {
+      steps {
+        echo "Static site - no build required"
+      }
+    }
+
+    stage('Deploy to webroot') {
+      steps {
+        bat '''
+          echo Deploying to webroot...
+          if not exist "C:\\inetpub\\wwwroot\\" mkdir "C:\\inetpub\\wwwroot\\"
+          xcopy /E /Y /I "%WORKSPACE%\\*" "C:\\inetpub\\wwwroot\\"
+        '''
+      }
+    }
+  }
+
+  post {
+    success { echo "Deployment finished." }
+    failure { echo "Deployment failed." }
+  }
+}
+
+
+Save the file.
+
+✅ Step-4: Add + Commit + Push the Jenkinsfile to GitHub
+
+Open CMD inside your project folder:
+
+git add Jenkinsfile
+git commit -m "Added Jenkins pipeline"
+git push
+
+✅ Step-5: Configure Jenkins → Pipeline script from SCM
+
+Now inside Jenkins:
+
+Open Jenkins → New Item
+
+Choose Pipeline
+
+Scroll to Pipeline
+
+Select:
+
+Definition: Pipeline script from SCM
+
+SCM: Git
+
+Repo URL:
+
+https://github.com/SharayuDharme/portfolio-website.git
+
+
+Branch:
+
+*/main
+
+
+Script Path:
+
+Jenkinsfile
+
+
+Click Save
+
+Click Build Now
+
+-->
